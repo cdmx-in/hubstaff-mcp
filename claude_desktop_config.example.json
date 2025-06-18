@@ -1,0 +1,22 @@
+{
+  "_comment": "Example Claude Desktop Configuration",
+  "_instructions": [
+    "Add this to your Claude Desktop config file:",
+    "macOS: ~/Library/Application Support/Claude/claude_desktop_config.json",
+    "Windows: %APPDATA%/Claude/claude_desktop_config.json"
+  ],
+  "mcpServers": {
+    "hubstaff": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/your/hubstaff-mcp",
+        "run",
+        "hubstaff-mcp"
+      ],
+      "env": {
+        "HUBSTAFF_ACCESS_TOKEN": "your_personal_access_token_here"
+      }
+    }
+  }
+}

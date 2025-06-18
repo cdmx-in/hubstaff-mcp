@@ -1,0 +1,9 @@
+include README.md
+include LICENSE
+include example.env
+include claude_desktop_config.example.json
+recursive-include src *.py
+recursive-exclude tests *
+recursive-exclude .venv *
+global-exclude *.pyc
+global-exclude __pycache__

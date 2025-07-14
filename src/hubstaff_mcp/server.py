@@ -19,7 +19,7 @@ except ImportError:
 # Initialize FastMCP server
 mcp = FastMCP("hubstaff")
 
-# Initialize Hubstaff client (will be re-initialized in main() with proper error handling)
+# Initialize Hubstaff client (will be initialized in main() with proper error handling)
 hubstaff_client = None
 
 
@@ -44,11 +44,11 @@ Paid: {'Yes' if entry.get('paid') else 'No'}
 def format_project(project: Dict[str, Any]) -> str:
     """Format a project for display."""
     return f"""
-Project ID: {project.get('id')}
-Name: {project.get('name')}
-Description: {project.get('description', 'No description')}
-Status: {project.get('status', 'Unknown')}
-Created: {project.get('created_at', 'Unknown')}
+ Project ID: {project.get('id')}
+ Name: {project.get('name')}
+ Description: {project.get('description', 'No description')}
+ Status: {project.get('status', 'Unknown')}
+ Created: {project.get('created_at', 'Unknown')}
 """
 
 
@@ -522,6 +522,87 @@ Tracked Time: {timesheet.get('tracked', 0)} seconds
         
     except Exception as e:
         return f"Error generating timesheets: {str(e)}"
+
+
+@mcp.tool()
+async def refresh_access_token() -> str:
+    """Refresh and get a new access token using the refresh token.
+    
+    This tool is useful for testing the token refresh functionality
+    and getting a fresh access token for debugging purposes.
+    """
+    try:
+        if hubstaff_client is None:
+            return "Error: Hubstaff client not initialized. Please check your HUBSTAFF_REFRESH_TOKEN environment variable."
+        
+        access_token = await hubstaff_client._refresh_access_token()
+        
+        # Update the client's stored access token
+        hubstaff_client.access_token = access_token
+        
+        # Return a truncated version for security (show first 10 characters)
+        token_preview = access_token[:10] + "..." if len(access_token) > 10 else access_token
+        
+        return f"""
+Access Token Refreshed Successfully!
+Token Preview: {token_preview}
+Token Length: {len(access_token)} characters
+Status: Ready for API calls
+
+Note: The full token is stored internally and will be used for subsequent API calls.
+"""
+        
+    except Exception as e:
+        return f"Error refreshing access token: {str(e)}"
+
+
+@mcp.tool()
+async def get_token_status() -> str:
+    """Get the current status of the access token.
+    
+    This tool shows whether we have a valid access token stored
+    and provides information about the token configuration.
+    """
+    try:
+        if hubstaff_client is None:
+            return "Error: Hubstaff client not initialized. Please check your HUBSTAFF_REFRESH_TOKEN environment variable."
+        
+        refresh_token = hubstaff_client.refresh_token
+        access_token = hubstaff_client.access_token
+        
+        # Check refresh token
+        if not refresh_token:
+            return "❌ No refresh token configured. Please set HUBSTAFF_REFRESH_TOKEN environment variable."
+        
+        refresh_token_preview = refresh_token[:10] + "..." if len(refresh_token) > 10 else refresh_token
+        
+        # Check access token
+        if access_token:
+            access_token_preview = access_token[:10] + "..." if len(access_token) > 10 else access_token
+            token_status = "✅ Access token available"
+        else:
+            access_token_preview = "Not available"
+            token_status = "⚠️  No access token (will be obtained on first API call)"
+        
+        return f"""
+Token Status Report:
+===================
+
+Refresh Token: {refresh_token_preview}
+Refresh Token Length: {len(refresh_token)} characters
+Refresh Token Status: ✅ Available
+
+Access Token: {access_token_preview}
+Access Token Status: {token_status}
+
+API Base URL: {hubstaff_client.base_url}
+Auth URL: {hubstaff_client.auth_url}
+
+Configuration: ✅ Ready for API calls
+"""
+        
+    except Exception as e:
+        return f"Error checking token status: {str(e)}"
 
 
 def main():

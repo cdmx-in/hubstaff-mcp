@@ -6,12 +6,15 @@ import os
 import sys
 from pathlib import Path
 
+import pytest
+
 # Add the src directory to Python path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from hubstaff_mcp.client import HubstaffClient, HubstaffAPIError
 
 
+@pytest.mark.asyncio
 async def test_connection():
     """Test the Hubstaff API connection."""
     try:

@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# VS Code
+.vscode/
+
+# Test and coverage
+.coverage
+htmlcov/
+*.cover
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+*.egg
+*.manifest
+MANIFEST.in
+
+# Lock files
+uv.lock
+poetry.lock
+Pipfile.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.sqlite3
+*.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Sentry
+.sentry*
